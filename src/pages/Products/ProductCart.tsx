@@ -103,6 +103,7 @@ const ProductCard = ({ p }:{p:TProduct}) => {
         </section>
       </div>
     </div>
+
   );
 };
 

@@ -7,7 +7,6 @@ import Loader from "../../components/Loader";
 import { clearCartItems } from "../../redux/features/cart/cartSlice";
 import Message from "../../components/Message";
 import { useCreateOrderMutation } from "../../redux/features/order/createOrderApi";
-import { loadStripe } from "@stripe/stripe-js";
 
 
 type TProduct = {
@@ -51,46 +50,22 @@ const PlaceOrder = () => {
 
   const dispatch = useDispatch();
   const placeOrderHandler = async () => {
+    console.log(cart)
     try {
-      const stripe = await loadStripe("pk_test_51NG2oYIeE0DDHTl6FqDODDHwroUbpsgi9XqxxrvjAqMIVJLKzd265hD6ph59DOnw6dEHi8cqWHkE3MwmtZ08JCmF00pbXliLTr")
-      const body = {
-        products:cart
+      const order = {
+        orderItems: cart.cartItems,
+        shippingAddress: cart.shippingAddress,
+        paymentMethod: cart.paymentMethod,
+        itemsPrice: cart.itemsPrice,
+        shippingPrice: cart.shippingPrice,
+        taxPrice: cart.taxPrice,
+        totalPrice: cart.totalPrice,
+        user
       }
-      const headers = {
-        "Content-Type":"application/json"
-      }
-      const response = await fetch('http://localhost:5000/api/payment/create-checkout-session',{
-        method:'POST',
-        headers:headers,
-        body:JSON.stringify(body)
-  
-      })
-      const session = await response.json()
-      console.log(session.id)
-      const result = stripe?.redirectToCheckout({
-        sessionId: session.id
-      })
-      if (!session.id) {
-        console.error("Session ID is missing from the server response.");
-        return;
-      }
-      if(result?.error){
-        console.log(result.error)
-      }
-      // const orderData = {
-      //   user:user._id,
-      //   orderItems: cart.cartItems,
-      //   shippingAddress: cart.shippingAddress,
-      //   itemsPrice: cart.itemsPrice,
-      //   shippingPrice: cart.shippingPrice,
-      //   taxPrice: cart.taxPrice,
-      //   totalPrice: cart.totalPrice,
-      // }
-      // const res = await createOrder(orderData).unwrap();
-      // dispatch(clearCartItems());
-      // navigate(`/order/${res?._id}`);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error:any) {
+      const res = await createOrder(order).unwrap();
+      dispatch(clearCartItems());
+      navigate(`/order/${res._id}`);
+    } catch (error) {
       toast.error(error);
     }
   };

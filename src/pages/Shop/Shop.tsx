@@ -110,15 +110,18 @@ const Shop = () => {
   const getProducts = async () => {
     const res = await getProductsBySearch(query);
     setSearchProducts(res.data);
+    console.log(res)
   };
 
   useEffect(() => {
     getProducts();
   }, [query]);
 
+
+
   return (
     <>
-      <div className="container mx-auto">
+      {/* <div className="container mx-auto">
         <div className="flex md:flex-row">
           <div className="bg-neutral-100 pl-5 py-3 pr-3 mt-0 mb-0">
             <h2 className="h4 text-center py-2 bg-black rounded-full mb-2 text-white">
@@ -241,7 +244,124 @@ const Shop = () => {
         )}
           </div>
         </div>
+      </div> */}
+      <div className="container mx-auto">
+  <div className="flex md:flex-row">
+    <div className="bg-neutral-100 pl-5 py-3 pr-3 mt-0 mb-0">
+      {/* Filter by Categories */}
+      <h2 className="h4 text-center py-2 bg-black rounded-full mb-2 text-white">
+        Filter by Categories
+      </h2>
+
+      <div className="p-5 w-[15rem]">
+        {categoriesQuery?.data?.map((c: TCateogry) => (
+          <div key={c._id} className="mb-2">
+            <div className="flex items-center mr-4">
+              <input
+                type="checkbox"
+                onChange={(e) => handleCheck(e.target.checked, c.name)}
+                className="w-4 h-4 text-pink-600 bg-gray-100 border-gray-300 rounded focus:ring-pink-500 dark:bg-gray-700 dark:border-gray-600"
+              />
+              <label className="ml-2 text-sm font-medium text-black dark:text-gray-300">
+                {c.name}
+              </label>
+            </div>
+          </div>
+        ))}
       </div>
+
+      {/* Filter by Brands */}
+      <h2 className="h4 text-center py-2 bg-black rounded-full mb-2 text-white">
+        Filter by Brands
+      </h2>
+
+      <div className="p-5">
+        {uniqueBrands?.map((brand: any) => (
+          <div key={brand}>
+            <div className="flex items-enter mr-4 mb-5">
+              <input
+                type="radio"
+                name="brand"
+                onChange={() => handleBrandClick(brand)}
+                className="w-4 h-4 text-pink-400 bg-gray-100 border-gray-300 focus:ring-pink-500 dark:bg-gray-700"
+              />
+              <label className="ml-2 text-sm font-medium text-black dark:text-gray-300">
+                {brand}
+              </label>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Filter by Price */}
+      <h2 className="h4 text-center py-2 bg-black rounded-full mb-2 text-white">
+        Filter by Price
+      </h2>
+
+      <div className="p-5 w-[15rem]">
+        <input
+          type="text"
+          placeholder="Enter Price"
+          value={priceFilter}
+          onChange={handlePriceChange}
+          className="w-full px-3 py-2 placeholder-gray-600 border border-neutral-400 rounded-lg focus:outline-none focus:ring focus:border-pink-300"
+        />
+      </div>
+
+      <div className="p-5 pt-0">
+        <button
+          className="w-full border my-4 text-black"
+          onClick={() => window.location.reload()}
+        >
+          Reset
+        </button>
+      </div>
+    </div>
+
+    {/* Product Grid */}
+    <div className="p-3">
+      <div className="flex justify-between">
+        <h2 className="text-3xl font-bold text-center mb-2 text-pink-500">
+          {searchProducts?.length > 0 ? searchProducts.length : products?.length} Products
+        </h2>
+        <div className="ml-[60%]">
+          <input
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search for products"
+            className="p-1 border block"
+          />
+        </div>
+      </div>
+
+      {/* Product Cards */}
+      {searchProducts?.length === 0 && (
+        <div className="flex flex-wrap">
+          {products?.length === 0 ? (
+            <Loader />
+          ) : (
+            products.map((p: TProduct) => (
+              <div className="p-3" key={p._id}>
+                <ProductCard p={p} />
+              </div>
+            ))
+          )}
+        </div>
+      )}
+      {searchProducts?.length > 0 && (
+        <div className="flex flex-wrap">
+          {searchProducts.map((p: TProduct) => (
+            <div className="p-3" key={p._id}>
+              <SearchProductCard p={p} />
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  </div>
+</div>
+
     </>
   );
 };
