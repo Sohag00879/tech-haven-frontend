@@ -109,33 +109,3 @@ const ProductCarousel = () => {
 };
 
 export default ProductCarousel;
-
-
-
-
-
-   // <div key={product._id}>
-            //   <div className="w-[20rem] m-4 p-3 bg-black text-white rounded-lg shadow-lg border border-gray-800">
-            //     <div className="relative">
-            //       <img
-            //         src={product.image}
-            //         alt={product.name}
-            //         className="w-full h-48 object-cover rounded-t-lg transition-transform duration-300 ease-in-out transform hover:scale-110"
-            //       />
-            //       <HeartIcon product={product} />
-            //     </div>
-
-            //     <div className="p-4">
-            //       <Link to={`/product/${product._id}`}>
-            //         <h2 className="flex justify-between items-center">
-            //           <div className="text-lg font-semibold">
-            //             {`${product.name.substring(0,15)}..`}
-            //           </div>
-            //           <span className="bg-gray-800 text-pink-300 text-sm font-medium mr-2 px-2.5 py-0.5 rounded-full">
-            //             ${product.price}
-            //           </span>
-            //         </h2>
-            //       </Link>
-            //     </div>
-            //   </div>
-            // </div>

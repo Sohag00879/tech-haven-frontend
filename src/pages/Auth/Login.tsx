@@ -33,6 +33,7 @@ const submitHandler = async (e:React.FormEvent<HTMLFormElement>) =>{
             password
         }
         const res = await login(loginData).unwrap()
+        console.log(res)
 
         dispatch(setUser({user : res?.data, token:res?.token}))
         navigate('/')
@@ -42,7 +43,8 @@ const submitHandler = async (e:React.FormEvent<HTMLFormElement>) =>{
         
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error:any) {
-        toast.error(error?.data?.message || error.message)
+      console.log(error)
+        toast.error(error?.data?.message || error?.data?.error)
         
     }
 }
