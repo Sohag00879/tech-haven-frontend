@@ -1,4 +1,5 @@
 import { useParams } from "react-router";
+import { Link } from "react-router-dom";
 import { useGetProductDetailsQuery } from "../../redux/features/admin/products/getProductDetailsApi";
 
 const ProductScriping = () => {
@@ -59,10 +60,12 @@ const ProductScriping = () => {
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
           {product?.compares?.map((item: TCompareData, i: number) => (
-            <tr key={i}>
-              <td className="px-6 py-4 whitespace-nowrap">
-                {item.compareSiteName}
-              </td>
+            <tr key={i} className="cursor-pointer">
+              <Link to={`${item.compareSiteName}`}>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  {item.compareSiteName}
+                </td>
+              </Link>
               <td className="px-6 py-4 whitespace-nowrap">
                 {item.comparePrice}
               </td>

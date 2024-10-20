@@ -1,41 +1,40 @@
-import { Link } from "react-router-dom";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import { useDispatch } from "react-redux";
-import { addToCart } from "../../redux/features/cart/cartSlice";
+import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
+import { addToCart } from "../../redux/features/cart/cartSlice";
 import HeartIcon from "./HeartIcon";
 
-
 type TProduct = {
-    _id: string;
-    name: string;
-    image: string;
-    brand: string;
-    quantity: number;
-    category: string;
-    description: string;
-    rating: number;
-    numReviews: number;
-    price: number;
-    finalPrice? :string;
-    countInStock: number;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    reviews: any[]; 
-    createdAt: string;
-    updatedAt: string;
-    __v: number;
-  }
+  _id: string;
+  name: string;
+  image: string;
+  brand: string;
+  quantity: number;
+  category: string;
+  description: string;
+  rating: number;
+  numReviews: number;
+  price: number;
+  finalPrice?: string;
+  countInStock: number;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  reviews: any[];
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+};
 
-const ProductCard = ({ p }:{p:TProduct}) => {
-  console.log(p)
+const ProductCard = ({ p }: { p: TProduct }) => {
+  console.log(p);
   const dispatch = useDispatch();
 
-  const addToCartHandler = (product:TProduct, qty:number) => {
+  const addToCartHandler = (product: TProduct, qty: number) => {
     dispatch(addToCart({ ...product, qty }));
     toast.success("Item added successfully");
   };
 
-  console.log(p)
+  console.log(p);
 
   return (
     <div className="max-w-sm relative bg-[#1A1A1A] rounded-lg shaodw dark:bg-gray-800 dark:border-gray-700">
@@ -46,7 +45,7 @@ const ProductCard = ({ p }:{p:TProduct}) => {
           </span>
           <img
             className="cursor-pointer w-full transition-transform duration-300 ease-in-out transform hover:scale-110"
-            src={p.image}
+            src={p?.docAvatar?.url}
             alt={p.name}
             style={{ height: "170px", objectFit: "cover" }}
           />
@@ -56,7 +55,11 @@ const ProductCard = ({ p }:{p:TProduct}) => {
 
       <div className="p-5">
         <div className="flex justify-between">
-          <Link to={`/product/${p._id}`}><h5 className="mb-2 text-xl text-white dark:text-white">{p?.name}</h5></Link>
+          <Link to={`/product/${p._id}`}>
+            <h5 className="mb-2 text-xl text-white dark:text-white">
+              {p?.name}
+            </h5>
+          </Link>
 
           <p className="font-semibold text-pink-500">
             {/* {p?.price?.toLocaleString("en-US", {
@@ -103,7 +106,6 @@ const ProductCard = ({ p }:{p:TProduct}) => {
         </section>
       </div>
     </div>
-
   );
 };
 

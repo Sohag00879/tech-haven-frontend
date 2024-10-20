@@ -1,8 +1,7 @@
-import { Link, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
 import { FaTrash } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 import { addToCart, removeFromCart } from "../../redux/features/cart/cartSlice";
-import {loadStripe} from '@stripe/stripe-js'
 
 type TProduct = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -16,7 +15,7 @@ type TProduct = {
   rating: number;
   numReviews: number;
   price: number;
-  finalPrice ? : string;
+  finalPrice?: string;
   countInStock: number;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   reviews: any[];
@@ -42,9 +41,8 @@ const Cart = () => {
     dispatch(removeFromCart(id));
   };
 
-  const checkoutHandler = async() => {
+  const checkoutHandler = async () => {
     navigate("/shipping");
-
   };
   return (
     <>
@@ -62,7 +60,7 @@ const Cart = () => {
                 <div key={item._id} className="flex items-enter mb-[1rem] pb-2">
                   <div className="w-[5rem] h-[5rem]">
                     <img
-                      src={item.image}
+                      src={item?.docAvatar?.url}
                       alt={item.name}
                       className="w-full h-full object-cover rounded"
                     />

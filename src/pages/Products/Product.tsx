@@ -25,7 +25,7 @@ const Product = ({ product }: { product: IProduct }) => {
     <div className="w-[20rem] m-4 p-3 bg-black text-white rounded-lg shadow-lg border border-gray-800">
       <div className="relative">
         <img
-          src={product?.image}
+          src={product?.docAvatar?.url}
           alt={product?.name}
           className="w-full h-48 object-cover rounded-t-lg"
         />

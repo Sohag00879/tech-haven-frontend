@@ -29,9 +29,7 @@ const OfferProducts = (percentage: { percentage: string }) => {
   return (
     <div className="mt-10">
       <div className="flex relative">
-        <h1 className="ml-[20rem]  text-4xl font-semibold">
-          Flash Sale 
-        </h1>
+        <h1 className="ml-[20rem]  text-4xl font-semibold">Flash Sale</h1>
         <Link
           to="/product/all-offers"
           className="bg-pink-600 hover:bg-pink-500 font-bold rounded-full py-2 px-10 mr-[18rem] text-white absolute right-0"
@@ -51,7 +49,7 @@ const OfferProducts = (percentage: { percentage: string }) => {
             >
               <img
                 className="object-cover transition-transform duration-300 ease-in-out transform hover:scale-110"
-                src={product.image}
+                src={product?.docAvatar?.url}
                 alt="product image"
               />
               <span className="absolute top-0 left-0 m-2 rounded-full bg-black px-2 text-center text-sm font-medium text-white">

@@ -1,12 +1,11 @@
 import { useState } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useGetProductDetailsQuery } from "../../redux/features/admin/products/getProductDetailsApi";
 import { useCreateReviewMutation } from "../../redux/features/admin/products/createReviewApi";
+import { useGetProductDetailsQuery } from "../../redux/features/admin/products/getProductDetailsApi";
 
-import Loader from "../../components/Loader";
-import Message from "../../components/Message";
+import moment from "moment";
 import {
   FaBox,
   FaClock,
@@ -14,12 +13,13 @@ import {
   FaStar,
   FaStore,
 } from "react-icons/fa";
-import moment from "moment";
-import HeartIcon from "./HeartIcon";
-import Ratings from "./Ratings";
-import ProductTabs from "./ProductTabs";
+import Loader from "../../components/Loader";
+import Message from "../../components/Message";
 import { addToCart } from "../../redux/features/cart/cartSlice";
+import HeartIcon from "./HeartIcon";
 import ProductsByCategory from "./ProductsByCategory";
+import ProductTabs from "./ProductTabs";
+import Ratings from "./Ratings";
 
 const ProductDetails = () => {
   const { id: productId } = useParams();
@@ -46,7 +46,7 @@ const ProductDetails = () => {
   const [createReview, { isLoading: loadingProductReview }] =
     useCreateReviewMutation();
 
-  const submitHandler = async (e:React.FormEvent<HTMLFormElement>) => {
+  const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
@@ -55,22 +55,21 @@ const ProductDetails = () => {
         productId,
         rating,
         comment,
-        user:userId
+        user: userId,
       }).unwrap();
       refetch();
       toast.success("Review created successfully");
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error:any) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
       toast.error(error?.data || error.message);
     }
   };
 
-
   const addToCartHandler = () => {
-    if(!user){
-      navigate('/')
+    if (!user) {
+      navigate("/");
     }
-    dispatch(addToCart({ ...product, qty,user:userId }));
+    dispatch(addToCart({ ...product, qty, user: userId }));
     navigate("/cart");
   };
 
@@ -96,7 +95,7 @@ const ProductDetails = () => {
           <div className="flex gap-x-10 items-between mt-[2rem] ml-[5rem] mr-[5rem]">
             <div>
               <img
-                src={product?.image}
+                src={product?.docAvatar?.url}
                 alt={product?.name}
                 className="w-full object-cover xl:w-[50rem] lg:w-[45rem] md:w-[30rem] sm:w-[20rem] mr-[2rem] h-[80%]"
               />
@@ -110,7 +109,12 @@ const ProductDetails = () => {
                 {product?.description}
               </p>
 
-              <p className="text-5xl my-4 font-extrabold">$ {product.finalPrice?`${product.finalPrice}`:`${product.price}`}</p>
+              <p className="text-5xl my-4 font-extrabold">
+                ${" "}
+                {product.finalPrice
+                  ? `${product.finalPrice}`
+                  : `${product.price}`}
+              </p>
 
               <div className="flex items-center justify-between w-[20rem]">
                 <div className="one">
@@ -130,7 +134,8 @@ const ProductDetails = () => {
 
                 <div className="two">
                   <h1 className="flex items-center mb-6">
-                    <FaStar className="mr-2 text-white" /> Ratings: {product?.rating}
+                    <FaStar className="mr-2 text-white" /> Ratings:{" "}
+                    {product?.rating}
                   </h1>
                   <h1 className="flex items-center mb-6">
                     <FaShoppingCart className="mr-2 text-white" /> Quantity:{" "}
@@ -175,33 +180,32 @@ const ProductDetails = () => {
                   Add To Cart
                 </button>
                 <Link to={`/product/scriping/${product?._id}`}>
-                <button
-                  onClick={addToCartHandler}
-                  disabled={product?.countInStock === 0}
-                  className="bg-pink-600 hover:bg-pink-500 text-white py-2 px-4 rounded-lg mt-4 md:mt-0 ms-16"
-                >
-                  Web Scriping
-                </button>
+                  <button
+                    onClick={addToCartHandler}
+                    disabled={product?.countInStock === 0}
+                    className="bg-pink-600 hover:bg-pink-500 text-white py-2 px-4 rounded-lg mt-4 md:mt-0 ms-16"
+                  >
+                    Web Scriping
+                  </button>
                 </Link>
               </div>
             </div>
           </div>
           <div className="mt-[5rem] mb-10 container flex flex-wrap items-start justify-between ml-[10rem]">
-              <ProductTabs
-                loadingProductReview={loadingProductReview}
-                userInfo={user}
-                submitHandler={submitHandler}
-                rating={rating}
-                setRating={setRating}
-                comment={comment}
-                setComment={setComment}
-                product={product}
-              />
-            </div>
-            <ProductsByCategory category={product?.category}/>
+            <ProductTabs
+              loadingProductReview={loadingProductReview}
+              userInfo={user}
+              submitHandler={submitHandler}
+              rating={rating}
+              setRating={setRating}
+              comment={comment}
+              setComment={setComment}
+              product={product}
+            />
+          </div>
+          <ProductsByCategory category={product?.category} />
         </div>
       )}
-      
     </>
   );
 };

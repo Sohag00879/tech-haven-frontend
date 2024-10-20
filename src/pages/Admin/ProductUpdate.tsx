@@ -289,10 +289,6 @@
 
 // // export default ProductUpdate;
 
-
-
-
-
 // import { useNavigate, useParams } from "react-router";
 // import { useGetSingleProductQuery } from "../../redux/features/admin/products/getSingleProductApi";
 // import { useEffect, useState } from "react";
@@ -574,20 +570,15 @@
 
 // export default ProductUpdate;
 
-
-
-
-
-import { useNavigate, useParams } from "react-router";
-import { useGetSingleProductQuery } from "../../redux/features/admin/products/getSingleProductApi";
 import { useEffect, useState } from "react";
-import { useGetCategoriesQuery } from "../../redux/features/admin/category/getCategoriesApi";
-import { useUploadProductImageMutation } from "../../redux/features/admin/products/uploadProductImageApi";
-import { useUpdateProductMutation } from "../../redux/features/admin/products/updateProductApi";
-import { useDeleteProductMutation } from "../../redux/features/admin/products/deleteProductApi";
-import AdminMenu from "./AdminMenu";
-import { toast } from "react-toastify";
+import { useNavigate, useParams } from "react-router";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import { useGetCategoriesQuery } from "../../redux/features/admin/category/getCategoriesApi";
+import { useDeleteProductMutation } from "../../redux/features/admin/products/deleteProductApi";
+import { useGetSingleProductQuery } from "../../redux/features/admin/products/getSingleProductApi";
+import { useUpdateProductMutation } from "../../redux/features/admin/products/updateProductApi";
+import AdminMenu from "./AdminMenu";
 
 type TCategory = {
   _id: string;
@@ -597,8 +588,10 @@ type TCategory = {
 
 const ProductUpdate = () => {
   const params = useParams();
-  const { data: productData, isSuccess: isProductSuccess } = useGetSingleProductQuery(params._id);
-  const [image, setImage] = useState("");
+  const { data: productData, isSuccess: isProductSuccess } =
+    useGetSingleProductQuery(params._id);
+  const [docAvatar, setDocAvatar] = useState<File | string | null>(null);
+  const [docAvatarPreview, setDocAvatarPreview] = useState<string | null>(null);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
@@ -611,7 +604,6 @@ const ProductUpdate = () => {
   const navigate = useNavigate();
 
   const { data: categories = [] } = useGetCategoriesQuery();
-  const [uploadProductImage] = useUploadProductImageMutation();
   const [updateProduct] = useUpdateProductMutation();
   const [deleteProduct] = useDeleteProductMutation();
 
@@ -623,25 +615,22 @@ const ProductUpdate = () => {
       setCategory(productData.category);
       setQuantity(productData.quantity);
       setBrand(productData.brand);
-      setImage(productData.image);
       setStock(productData.countInStock);
       setDiscount(productData.discount);
       setFlashSale(productData.flashSale);
+      setDocAvatarPreview(productData.docAvatar?.url || "/docHolder.jpg"); // Show previous image
     }
   }, [isProductSuccess, productData]);
 
-  const uploadFileHandler = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const input = e.target as HTMLInputElement;
-    if (!input.files) return;
-    const formData = new FormData();
-    formData.append("image", input.files[0]);
-
-    try {
-      const res = await uploadProductImage(formData).unwrap();
-      toast.success(res.message);
-      setImage(res.image);
-    } catch (error: any) {
-      toast.error(error?.data?.message || error.error);
+  const handleAvatar = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setDocAvatar(file);
+      const reader = new FileReader();
+      reader.onload = () => {
+        setDocAvatarPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -649,7 +638,6 @@ const ProductUpdate = () => {
     e.preventDefault();
     try {
       const formData = new FormData();
-      formData.append("image", image);
       formData.append("name", name);
       formData.append("description", description);
       formData.append("price", price);
@@ -657,18 +645,20 @@ const ProductUpdate = () => {
       formData.append("quantity", quantity);
       formData.append("brand", brand);
       formData.append("countInStock", stock);
-      formData.append("discount", discount?.toString());
+      formData.append("discount", discount.toString());
       formData.append("flashSale", flashSale);
+      if (docAvatar instanceof File) {
+        formData.append("docAvatar", docAvatar);
+      }
 
       const { data } = await updateProduct({ productId: params._id, formData });
-
       if (data) {
+        toast.success("Product updated successfully!");
         navigate(`/product/${data._id}`);
-        toast.success("Product is updated");
       }
     } catch (error) {
-      console.error(error);
       toast.error("Product update failed. Try again.");
+      console.error(error);
     }
   };
 
@@ -683,7 +673,7 @@ const ProductUpdate = () => {
       toast.success(`"${data.name}" is deleted`);
       navigate("/admin/allproductslist");
     } catch (err) {
-      console.log(err);
+      console.error(err);
       toast.error("Delete failed. Try again.");
     }
   };
@@ -695,10 +685,10 @@ const ProductUpdate = () => {
         <div className="md:w-3/4 p-3">
           <div className="h-12 text-2xl font-bold">Update / Delete Product</div>
 
-          {image && (
-            <div className="text-center">
+          {docAvatarPreview && (
+            <div className="text-center mb-5">
               <img
-                src={image}
+                src={docAvatarPreview}
                 alt="product"
                 className="block mx-auto w-[50%] h-[30%]"
               />
@@ -707,13 +697,13 @@ const ProductUpdate = () => {
 
           <div className="mb-3 mt-5">
             <label className="text-black px-4 block w-full text-center rounded-lg cursor-pointer font-bold py-11 border">
-              Upload image
+              Upload New Image
               <input
                 type="file"
                 name="image"
                 accept="image/*"
-                onChange={uploadFileHandler}
-                className="text-white"
+                onChange={handleAvatar}
+                className="hidden"
               />
             </label>
           </div>
@@ -721,9 +711,8 @@ const ProductUpdate = () => {
           {isProductSuccess && (
             <form onSubmit={handleSubmit}>
               <div className="p-3">
-                {/* Form fields */}
                 <div className="flex">
-                  <div className="one">
+                  <div>
                     <label htmlFor="name">Name</label>
                     <input
                       type="text"
@@ -732,8 +721,7 @@ const ProductUpdate = () => {
                       onChange={(e) => setName(e.target.value)}
                     />
                   </div>
-
-                  <div className="two">
+                  <div>
                     <label htmlFor="price">Price</label>
                     <input
                       type="number"
@@ -766,9 +754,7 @@ const ProductUpdate = () => {
                   </div>
                 </div>
 
-                <label htmlFor="" className="my-5">
-                  Description
-                </label>
+                <label htmlFor="description">Description</label>
                 <textarea
                   className="p-2 mb-3 border rounded-lg w-[95%] text-black"
                   value={description}
@@ -785,9 +771,8 @@ const ProductUpdate = () => {
                       onChange={(e) => setStock(e.target.value)}
                     />
                   </div>
-
                   <div>
-                    <label htmlFor="">Category</label>
+                    <label htmlFor="category">Category</label>
                     <select
                       className="p-4 mb-3 w-[30rem] border rounded-lg text-black mr-[5rem]"
                       value={category}
@@ -804,7 +789,7 @@ const ProductUpdate = () => {
                     </select>
                   </div>
                 </div>
-                
+
                 <div className="flex gap-10">
                   <div>
                     <label htmlFor="discount">Discount</label>
@@ -815,8 +800,10 @@ const ProductUpdate = () => {
                       onChange={(e) => setDiscount(e.target.value)}
                     />
                   </div>
-                  <div>
-                    <label htmlFor="">Flash Sale</label>
+                  <div className="flex flex-col space-y-2">
+                    <label htmlFor="flashSale" className="text-black">
+                      Flash Sale ?
+                    </label>
                     <select
                       className="border w-[10rem] h-[3rem] rounded-lg text-black"
                       value={flashSale}
@@ -825,8 +812,8 @@ const ProductUpdate = () => {
                       <option value={productData?.flashSale}>
                         {productData?.flashSale}
                       </option>
-                      <option value={flashSale === 'true' ? 'false' : 'true'}>
-                        {flashSale === 'true' ? 'false' : 'true'}
+                      <option value={flashSale === "true" ? "false" : "true"}>
+                        {flashSale === "true" ? "false" : "true"}
                       </option>
                     </select>
                   </div>
@@ -835,19 +822,20 @@ const ProductUpdate = () => {
                 <div className="flex justify-between">
                   <button
                     type="submit"
-                    className="py-2 px-5 mt-5 rounded-lg text-lg font-bold text-white bg-green-700 hover:bg-green-600"
+                    className="py-2 px-5 mt-5 rounded-lg text-lg font-bold text-white bg-[#228B22]"
                   >
                     Update
                   </button>
                   <button
                     onClick={handleDelete}
-                    className="py-2 px-5 mt-5 rounded-lg text-lg font-bold bg-pink-600 hover:bg-pink-500 text-white"
+                    type="button"
+                    className="py-2 px-5 mt-5 rounded-lg text-lg font-bold text-white bg-red-500"
                   >
                     Delete
                   </button>
                   <Link
-                    to={`/admin/product/update/add-comparison/${productData?._id}`}
-                    className="py-2 px-5 mt-5 rounded-lg text-lg font-bold bg-slate-950 hover:bg-slate-800 text-white"
+                    to={`/admin/product/update/add-comparison/${productData._id}`}
+                    className="py-2 px-5 mt-5 rounded-lg text-lg font-bold text-white bg-blue-500"
                   >
                     Add Comparison
                   </Link>

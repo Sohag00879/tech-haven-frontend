@@ -1,21 +1,29 @@
 import { useState } from "react";
-import { useGetTotalOrdersByTimeQuery } from "../../redux/features/order/getTotalOrdersByTimeApi";
-import OrderStatusModal from "../../components/OrderStatusModal";
 import Loader from "../../components/Loader";
 import Message from "../../components/Message";
+import OrderStatusModal from "../../components/OrderStatusModal";
+import { useGetTotalOrdersByTimeQuery } from "../../redux/features/order/getTotalOrdersByTimeApi";
 import AdminMenu from "./AdminMenu";
 
 const AllOrder = () => {
   const [selectedTimeFrame, setSelectedTimeFrame] = useState<string>("all");
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
-  const [selectedPaidStatus, setSelectedPaidStatus] = useState<boolean | null>(null);
-  const [selectedDeliveredStatus, setSelectedDeliveredStatus] = useState<boolean | null>(null);
+  const [selectedPaidStatus, setSelectedPaidStatus] = useState<boolean | null>(
+    null
+  );
+  const [selectedDeliveredStatus, setSelectedDeliveredStatus] = useState<
+    boolean | null
+  >(null);
   const [showModal, setShowModal] = useState(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const itemsPerPage = 10;
 
   // Fetch orders based on selected time frame and page number
-  const { data: orders, isLoading, error } = useGetTotalOrdersByTimeQuery({
+  const {
+    data: orders,
+    isLoading,
+    error,
+  } = useGetTotalOrdersByTimeQuery({
     timeFrame: selectedTimeFrame,
     page: currentPage,
     limit: itemsPerPage,
@@ -63,20 +71,38 @@ const AllOrder = () => {
         {isLoading ? (
           <Loader />
         ) : error ? (
-          <Message variant="danger">{error?.data?.message || error.error}</Message>
+          <Message variant="danger">
+            {error?.data?.message || error.error}
+          </Message>
         ) : (
           <>
             <table className="table-auto w-full bg-white shadow-md rounded-lg overflow-hidden">
               <thead className="bg-gray-100">
                 <tr>
-                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-500">ITEMS</th>
-                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-500">ID</th>
-                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-500">USER</th>
-                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-500">DATE</th>
-                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-500">TOTAL</th>
-                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-500">PAID</th>
-                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-500">DELIVERED</th>
-                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-500">ACTIONS</th>
+                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-500">
+                    ITEMS
+                  </th>
+                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-500">
+                    ID
+                  </th>
+                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-500">
+                    USER
+                  </th>
+                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-500">
+                    DATE
+                  </th>
+                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-500">
+                    TOTAL
+                  </th>
+                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-500">
+                    PAID
+                  </th>
+                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-500">
+                    DELIVERED
+                  </th>
+                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-500">
+                    ACTIONS
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
@@ -84,25 +110,33 @@ const AllOrder = () => {
                   <tr key={order._id} className="hover:bg-gray-50">
                     <td className="px-4 py-2">
                       <img
-                        src={order.orderItems[0]?.image}
+                        src={order.orderItems[0]?.docAvatar?.url}
                         alt={order._id}
                         className="w-16 h-16 object-cover rounded"
                       />
                     </td>
                     <td className="px-4 py-2">{order._id}</td>
-                    <td className="px-4 py-2">{order.user?.userName || "N/A"}</td>
-                    <td className="px-4 py-2">{order.createdAt.substring(0, 10)}</td>
+                    <td className="px-4 py-2">
+                      {order.user?.userName || "N/A"}
+                    </td>
+                    <td className="px-4 py-2">
+                      {order.createdAt.substring(0, 10)}
+                    </td>
                     <td className="px-4 py-2">$ {order.totalPrice}</td>
                     <td className="px-4 py-2">
                       {order.isPaid ? (
-                        <span className="text-green-500 font-semibold">Yes</span>
+                        <span className="text-green-500 font-semibold">
+                          Yes
+                        </span>
                       ) : (
                         <span className="text-red-500 font-semibold">No</span>
                       )}
                     </td>
                     <td className="px-4 py-2">
                       {order.isDelivered ? (
-                        <span className="text-green-500 font-semibold">Yes</span>
+                        <span className="text-green-500 font-semibold">
+                          Yes
+                        </span>
                       ) : (
                         <span className="text-red-500 font-semibold">No</span>
                       )}
@@ -146,14 +180,17 @@ const AllOrder = () => {
         )}
       </div>
 
-      {showModal && selectedOrderId && selectedPaidStatus !== null && selectedDeliveredStatus !== null && (
-        <OrderStatusModal
-          orderId={selectedOrderId}
-          currentPaidStatus={selectedPaidStatus}
-          currentDeliveredStatus={selectedDeliveredStatus}
-          onClose={closeModal}
-        />
-      )}
+      {showModal &&
+        selectedOrderId &&
+        selectedPaidStatus !== null &&
+        selectedDeliveredStatus !== null && (
+          <OrderStatusModal
+            orderId={selectedOrderId}
+            currentPaidStatus={selectedPaidStatus}
+            currentDeliveredStatus={selectedDeliveredStatus}
+            onClose={closeModal}
+          />
+        )}
     </>
   );
 };

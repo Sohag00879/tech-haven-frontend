@@ -1,39 +1,41 @@
-import { Link } from "react-router-dom"
-import { useGetFlashSaleProductsQuery } from "../../redux/features/admin/products/getFlashSaleProductsApi";
+import { Link } from "react-router-dom";
 import Loader from "../../components/Loader";
+import { useGetFlashSaleProductsQuery } from "../../redux/features/admin/products/getFlashSaleProductsApi";
 import HeartIcon from "./HeartIcon";
 import Ratings from "./Ratings";
 type TProduct = {
-    _id: string;
-    name: string;
-    image: string;
-    brand: string;
-    quantity: number;
-    category: string;
-    description: string;
-    rating: number;
-    numReviews: number;
-    price: number;
-    finalPrice: string;
-    countInStock: number;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    reviews: any[];
-    discount: number;
-    createdAt: string;
-    updatedAt: string;
-    __v: number;
-  };
+  _id: string;
+  name: string;
+  image: string;
+  brand: string;
+  quantity: number;
+  category: string;
+  description: string;
+  rating: number;
+  numReviews: number;
+  price: number;
+  finalPrice: string;
+  countInStock: number;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  reviews: any[];
+  discount: number;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+};
 const AllFlashSaleProducts = () => {
-    const { data, isLoading, error } = useGetFlashSaleProductsQuery();
-    if (isLoading) {
-        return <Loader />;
-      }
-      if (error) {
-        return <h1>ERROR</h1>;
-      }
+  const { data, isLoading, error } = useGetFlashSaleProductsQuery();
+  if (isLoading) {
+    return <Loader />;
+  }
+  if (error) {
+    return <h1>ERROR</h1>;
+  }
   return (
     <div>
-        <h1 className="text-center text-4xl text-pink-500 font-semibold">All Flash Sale</h1>
+      <h1 className="text-center text-4xl text-pink-500 font-semibold">
+        All Flash Sale
+      </h1>
       <div className="py-5 ps-20 pr-20 relative m-10 grid gap-6 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 w-full max-w-full overflow-hidden rounded-md border border-gray-100  bg-white shadow-sm">
         {data?.map((product: TProduct) => (
           <div
@@ -46,7 +48,7 @@ const AllFlashSaleProducts = () => {
             >
               <img
                 className="object-cover"
-                src={product.image}
+                src={product?.docAvatar?.url}
                 alt="product image"
               />
               <span className="absolute top-0 left-0 m-2 rounded-full bg-black px-2 text-center text-sm font-medium text-white">
@@ -88,7 +90,7 @@ const AllFlashSaleProducts = () => {
         ))}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default AllFlashSaleProducts
+export default AllFlashSaleProducts;

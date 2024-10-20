@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 import { useGetOfferProductsQuery } from "../../redux/features/admin/products/getOfferProductsApi";
+import { useGetOfferQuery } from "../../redux/features/offer/getOfferApi";
 import HeartIcon from "./HeartIcon";
 import Ratings from "./Ratings";
-import { useGetOfferQuery } from "../../redux/features/offer/getOfferApi";
 type TProduct = {
   _id: string;
   name: string;
@@ -31,9 +31,14 @@ const AllOffersProducts = () => {
   return (
     <div className="mt-10">
       <h1 className="text-center text-3xl text-black font-semibold">
-      Flash Sale on All Products!
+        Flash Sale on All Products!
       </h1>
-      <p className="text-center ml-20 mr-2 mt-2">Discover unbeatable deals on our exclusive flash sale! For a limited time, we're offering incredible discounts on every product across our store. Whether you're looking for the latest tech, stylish fashion, or essential home goods, now is the perfect time to shop and save.</p>
+      <p className="text-center ml-20 mr-2 mt-2">
+        Discover unbeatable deals on our exclusive flash sale! For a limited
+        time, we're offering incredible discounts on every product across our
+        store. Whether you're looking for the latest tech, stylish fashion, or
+        essential home goods, now is the perfect time to shop and save.
+      </p>
       <div className="py-5 ps-20 pr-20 relative m-10 grid gap-6 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 w-full max-w-full overflow-hidden rounded-md border border-gray-100  bg-white shadow-sm">
         {data?.map((product: TProduct) => (
           <div
@@ -46,7 +51,7 @@ const AllOffersProducts = () => {
             >
               <img
                 className="object-cover transform transition duration-300 hover:scale-105"
-                src={product.image}
+                src={product?.docAvatar?.url}
                 alt="product image"
               />
               <span className="absolute top-0 left-0 m-2 rounded-full bg-black px-2 text-center text-sm font-medium text-white">

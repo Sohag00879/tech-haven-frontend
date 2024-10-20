@@ -1,37 +1,42 @@
 import { Link, useParams } from "react-router-dom";
-import Messsage from "../../components/Message";
 import Loader from "../../components/Loader";
+import Messsage from "../../components/Message";
 import { useDeliverOrderMutation } from "../../redux/features/order/deliverOrderApi";
 import { useGetOrderDetailsQuery } from "../../redux/features/order/getOrderDetailsApi";
 type TProduct = {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    _id: string | any;
-    name: string;
-    image: string;
-    brand: string;
-    // quantity: number;
-    qty:number;
-    category: string;
-    description: string;
-    rating: number;
-    product?:string;
-    numReviews: number;
-    price: number;
-    finalPrice? : string;
-    countInStock: number;
-    shippingAddress:{address:string;city:string;postalCode:string;country:string}
-    user:{_id:string;userName:string,email:string;}
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    reviews: any[];
-    createdAt: string;
-    updatedAt: string;
-    __v: number;
-  }
-  
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  _id: string | any;
+  name: string;
+  image: string;
+  brand: string;
+  // quantity: number;
+  qty: number;
+  category: string;
+  description: string;
+  rating: number;
+  product?: string;
+  numReviews: number;
+  price: number;
+  finalPrice?: string;
+  countInStock: number;
+  shippingAddress: {
+    address: string;
+    city: string;
+    postalCode: string;
+    country: string;
+  };
+  user: { _id: string; userName: string; email: string };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  reviews: any[];
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+};
+
 const Order = () => {
   const { id } = useParams();
-    useDeliverOrderMutation();
-  const {data:order,isLoading,error} = useGetOrderDetailsQuery(id)
+  useDeliverOrderMutation();
+  const { data: order, isLoading, error } = useGetOrderDetailsQuery(id);
 
   return isLoading ? (
     <Loader />
@@ -57,11 +62,11 @@ const Order = () => {
                 </thead>
 
                 <tbody>
-                  {order?.orderItems?.map((item:TProduct, index:number) => (
+                  {order?.orderItems?.map((item: TProduct, index: number) => (
                     <tr key={index}>
                       <td className="p-2">
                         <img
-                          src={item.image}
+                          src={item?.docAvatar?.url}
                           alt={item.name}
                           className="w-16 h-16 object-cover"
                         />
@@ -98,16 +103,19 @@ const Order = () => {
           </p>
 
           <p className="mb-4">
-            <strong className="text-pink-500">Email:</strong> {order?.user?.email}
+            <strong className="text-pink-500">Email:</strong>{" "}
+            {order?.user?.email}
           </p>
           <p className="mb-4">
-            <strong className="text-pink-500">Contact:</strong> {order?.shippingAddress.contact}
+            <strong className="text-pink-500">Contact:</strong>{" "}
+            {order?.shippingAddress.contact}
           </p>
 
           <p className="mb-4">
             <strong className="text-pink-500">Address:</strong>{" "}
             {order?.shippingAddress.address}, {order?.shippingAddress.city}{" "}
-            {order?.shippingAddress.postalCode}, {order?.shippingAddress.country}
+            {order?.shippingAddress.postalCode},{" "}
+            {order?.shippingAddress.country}
           </p>
 
           <p className="mb-4">

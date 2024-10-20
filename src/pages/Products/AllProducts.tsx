@@ -51,7 +51,7 @@ const AllProducts = () => {
             >
               <img
                 className="object-cover transition-transform duration-300 ease-in-out transform hover:scale-110"
-                src={product.image}
+                src={product?.docAvatar?.url}
                 alt="product image"
               />
               <span className="absolute top-0 left-0 m-2 rounded-full bg-black px-2 text-center text-sm font-medium text-white">

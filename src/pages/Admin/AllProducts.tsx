@@ -1,11 +1,11 @@
-import { useState } from "react";
-import Loader from "../../components/Loader";
 import moment from "moment";
-import AdminMenu from "./AdminMenu";
-import { useGetProductsByCategoryQuery } from "../../redux/features/admin/category/getProductsByCategoryApi";
-import { useGetCategoriesQuery } from "../../redux/features/admin/category/getCategoriesApi";
+import { useState } from "react";
 import { Link } from "react-router-dom";
+import Loader from "../../components/Loader";
+import { useGetCategoriesQuery } from "../../redux/features/admin/category/getCategoriesApi";
+import { useGetProductsByCategoryQuery } from "../../redux/features/admin/category/getProductsByCategoryApi";
 import { useGetAllProductQuery } from "../../redux/features/admin/products/getAllProductApi";
+import AdminMenu from "./AdminMenu";
 
 interface Category {
   _id: string;
@@ -122,7 +122,7 @@ const AllProducts = () => {
                 >
                   <div className="flex">
                     <img
-                      src={product.image}
+                      src={product?.docAvatar?.url}
                       alt={product.name}
                       className="w-[10rem] object-cover"
                     />

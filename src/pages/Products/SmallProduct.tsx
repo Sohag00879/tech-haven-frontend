@@ -3,30 +3,30 @@ import HeartIcon from "./HeartIcon";
 // import HeartIcon from "./HeartIcon";
 
 interface IProduct {
-    _id: string;
-    name: string;
-    image: string;
-    brand: string;
-    quantity: number;
-    category: string;
-    description: string;
-    rating: number;
-    numReviews: number;
-    price: number;
-    countInStock: number;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    reviews: any[]; 
-    createdAt: string;
-    updatedAt: string;
-    __v: number;
-  }
+  _id: string;
+  name: string;
+  image: string;
+  brand: string;
+  quantity: number;
+  category: string;
+  description: string;
+  rating: number;
+  numReviews: number;
+  price: number;
+  countInStock: number;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  reviews: any[];
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
 
-const SmallProduct = ({ product }:{product:IProduct}) => {
+const SmallProduct = ({ product }: { product: IProduct }) => {
   return (
     <div className="w-[18rem] ml-[2rem] p-3">
       <div className="relative">
         <img
-          src={product.image}
+          src={product?.docAvatar?.url}
           alt={product.name}
           className="h-auto rounded"
         />
@@ -45,4 +45,4 @@ const SmallProduct = ({ product }:{product:IProduct}) => {
     </div>
   );
 };
-export default SmallProduct; 
+export default SmallProduct;
